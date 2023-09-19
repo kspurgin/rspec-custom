@@ -4,14 +4,15 @@ require "spec_helper"
 
 module MatchCsvMatcher
   class MatchCsvMatcher
-    def initialize(expected_path)
+    def initialize(expected_path, csvopts = {headers: true})
       @expected_path = expected_path
-      @expected = CSV.read(expected_path, **Kiba::Extend.csvopts)
+      @csvopts = csvopts
+      @expected = CSV.read(expected_path, **csvopts)
     end
 
     def matches?(result_path)
       @result_path = result_path
-      @result = CSV.read(result_path, **Kiba::Extend.csvopts)
+      @result = CSV.read(result_path, **csvopts)
       @header_diff = get_header_diff
       @row_diff = get_row_diff
       @value_diff = get_value_diff
@@ -36,7 +37,7 @@ module MatchCsvMatcher
 
     private
 
-    attr_reader :result_path, :expected_path,
+    attr_reader :result_path, :expected_path, :csvopts,
       :expected, :result, :header_diff, :row_diff, :value_diff
 
     def get_header_diff
