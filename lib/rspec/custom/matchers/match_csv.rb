@@ -129,11 +129,11 @@ module MatchCsvMatcher
     end
 
     def row_mismatch_message(row, diff)
-      msg = ["ROW #{row}"]
+      msg = ["ROW #{row} - Cell vals wrapped in arrows to show spaces"]
       diff.each do |hdr, vals|
         msg << "  #{hdr}"
-        msg << "    expected: #{vals[:expected]}"
-        msg << "         got: #{vals[:result]}"
+        msg << "    expected: ->#{vals[:expected]}<-"
+        msg << "         got: ->#{vals[:result]}<-"
       end
       msg.join("\n")
     end
