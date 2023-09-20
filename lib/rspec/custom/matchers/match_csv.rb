@@ -124,12 +124,14 @@ module MatchCsvMatcher
     def value_mismatch_message
       return if value_diff.empty?
 
+      puts "Values are wrapped in -><- to make leading/trailing spacing "\
+        "visible"
       value_diff.map{ |row, diff| row_mismatch_message(row, diff) }
         .join("\n")
     end
 
     def row_mismatch_message(row, diff)
-      msg = ["ROW #{row} - Cell vals wrapped in arrows to show spaces"]
+      msg = ["ROW #{row}"]
       diff.each do |hdr, vals|
         msg << "  #{hdr}"
         msg << "    expected: ->#{vals[:expected]}<-"
