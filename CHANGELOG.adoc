@@ -1,0 +1,31 @@
+:toc:
+:toc-placement!:
+:toclevels: 4
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+= Changelog
+
+The format of this file is loosely based on https://keepachangelog.com/en/1.0.0/[Keep a Changelog], and this project adheres to https://semver.org/spec/v2.0.0.html[Semantic Versioning].
+
+toc::[]
+
+== 1.0.0 - 2024-03-26
+
+=== Breaking
+
+* `MatchCsvMatcher`: `csvopts` is now a keyword argument instead of a positional argument
+
+=== Added
+
+* `MatchCsvMatcher`: `blankmode` keyword argument. The default (`:permissive`) considers nil values and empty string values to match each other. Using `:strict` instead forces exact match, and will consider nil and empty string values nonmatching.
+
+=== Changed
+
+* `MatchCsvMatcher`: Value diff output now shows `->(empty string)<-` and `->(nil value)<-` instead of visually identical (and thus confusing) results.

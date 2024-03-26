@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "spec_helper"
-
 module MatchCsvMatcher
   class MatchCsvMatcher
-    def initialize(expected_path, csvopts = {headers: true})
+    def initialize(expected_path, csvopts: {headers: true},
+                   blankmode: :permissive)
       @expected_path = expected_path
       @csvopts = csvopts
+      @blankmode = blankmode
       @expected = CSV.read(expected_path, **csvopts)
     end
 
@@ -37,7 +37,7 @@ module MatchCsvMatcher
 
     private
 
-    attr_reader :result_path, :expected_path, :csvopts,
+    attr_reader :result_path, :expected_path, :csvopts, :blankmode,
       :expected, :result, :header_diff, :row_diff, :value_diff
 
     def get_header_diff
@@ -83,8 +83,23 @@ module MatchCsvMatcher
         e_val = exprow[hdr]
         r_val = resrow[hdr]
         next if e_val == r_val
+        if blankmode == :permissive
+          next if ( e_val.nil? && r_val.empty? ) ||
+            ( e_val.empty? && r_val.nil? )
+        end
 
-        diff[hdr] = {expected: e_val, result: r_val}
+        diffresult = {expected: e_val, result: r_val}
+        diffresult.transform_values! do |val|
+          if val.nil?
+            "(nil value)"
+          elsif val == ""
+            "(empty string)"
+          else
+            val
+          end
+        end
+
+        diff[hdr] = diffresult
       end
       diff
     end
@@ -141,8 +156,8 @@ module MatchCsvMatcher
     end
   end
 
-  def match_csv(expected_path)
-    MatchCsvMatcher.new(expected_path)
+  def match_csv(...)
+    MatchCsvMatcher.new(...)
   end
 end
 
